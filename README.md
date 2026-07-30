@@ -32,7 +32,7 @@ It includes:
 
 ## Tech Stack
 
-- Astro 6
+- Astro 7
 - Tailwind CSS 4 via Vite plugin
 - MDX
 - `@fontsource-variable/manrope`
