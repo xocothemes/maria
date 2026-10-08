@@ -1,273 +1,136 @@
 ---
 import { Image } from 'astro:assets';
-import Layout from '../layouts/Layout.astro';
-import SiteHeader from '../components/SiteHeader.astro';
-import figmaLogo from '../assets/logos/figma.svg';
-import framerLogo from '../assets/logos/framer.svg';
-import shopifyLogo from '../assets/logos/shopify.svg';
-import webflowLogo from '../assets/logos/webflow.svg';
-
-const tools = [
-	{ name: 'Figma', logo: figmaLogo, tone: 'light' },
-	{ name: 'Framer', logo: framerLogo, tone: 'dark' },
-	{ name: 'Shopify', logo: shopifyLogo, tone: 'light' },
-	{ name: 'Webflow', logo: webflowLogo, tone: 'light' },
-];
+import Icon from '@/components/ui/Icon.astro';
+import PageHero from '@/components/ui/PageHero.astro';
+import { resume } from '@/config/resume';
+import { siteConfig } from '@/config/site';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { profileSchema } from '@/lib/schema';
 ---
 
-<Layout
-	title="Resume | Astro Theme for UI/UX Designer Portfolios"
-	description="Resume page example from the Maria Astro theme for UI/UX designer portfolios, showcasing experience, capabilities, and tools."
+<BaseLayout
+  title="Resume"
+  description={`Resume of ${siteConfig.author.name}: experience, capabilities, education, and tools across ten years of product design.`}
+  type="profile"
+  structuredData={profileSchema('/resume/')}
 >
-	<a class="skip-link" href="#main-content">Skip to content</a>
+  <PageHero eyebrow={resume.eyebrow} title={resume.title} highlight={resume.highlight} text={resume.text}>
+    <div class="rise mt-8 flex flex-wrap gap-3" style="--rise-step: 3">
+      {siteConfig.resumePdf && (
+        <a class="btn btn-primary" href={siteConfig.resumePdf} download>
+          <Icon name="download" class="size-4" />
+          Download PDF
+        </a>
+      )}
+      <a
+        class:list={['btn', siteConfig.resumePdf ? 'btn-ghost' : 'btn-primary']}
+        href={`mailto:${siteConfig.author.email}`}
+      >
+        {siteConfig.author.email}
+        <Icon name="arrow-up-right" class="icon-nudge-diagonal size-4" />
+      </a>
+    </div>
+  </PageHero>
 
-	<div class="page">
-		<SiteHeader />
+  <div class="shell mt-20 sm:mt-28">
+    <section class="resume-row reveal" aria-labelledby="snapshot-title">
+      <h2 id="snapshot-title" class="eyebrow self-start">
+        Snapshot
+      </h2>
+      <dl class="grid gap-x-10 gap-y-6 sm:grid-cols-2">
+        {resume.snapshot.map((item) => (
+          <div>
+            <dt class="text-sm text-muted">{item.label}</dt>
+            <dd class="mt-1 text-lg font-medium">{item.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
 
-		<main id="main-content">
-			<section class="hero">
-				<p class="eyebrow">Resume</p>
-				<h1 class="display-title">10+ years shaping digital products through UX, UI, and systems thinking.</h1>
-				<div class="hero-subgrid">
-					<p class="hero-text">
-						My work has focused on product clarity: helping teams bring structure to messy
-						workflows, overloaded interfaces, and growing systems that need to scale without
-						becoming harder to use.
-					</p>
-				</div>
-			</section>
+    <section class="resume-row reveal" aria-labelledby="experience-title">
+      <h2 id="experience-title" class="eyebrow self-start">
+        Experience
+      </h2>
+      <ol class="grid gap-10">
+        {resume.experience.map((job) => (
+          <li class="grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-x-8">
+            <h3 class="text-title">
+              {job.role}
+              <span class="text-muted">, {job.company}</span>
+            </h3>
+            <p class="text-sm text-muted sm:row-start-1 sm:col-start-2 sm:pt-1.5">{job.period}</p>
+            <p class="max-w-2xl text-body">{job.text}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
 
-			<section class="editorial-section">
-				<div class="section-rail">
-					<p class="section-kicker">Snapshot</p>
-				</div>
-				<div class="story-block">
-					<p><strong>Location:</strong> Europe</p>
-					<p><strong>Focus:</strong> UX Design / Product Design</p>
-					<p><strong>Specialties:</strong> Dashboards, workflows, design systems</p>
-					<p><strong>Contact:</strong> <a href="mailto:hello@maria.com">hello@maria.com</a></p>
-				</div>
-			</section>
+    <section class="resume-row reveal" aria-labelledby="capabilities-title">
+      <h2 id="capabilities-title" class="eyebrow self-start">
+        Capabilities
+      </h2>
+      <ul class="grid gap-8 sm:grid-cols-3">
+        {resume.capabilities.map((item) => (
+          <li>
+            <h3 class="font-semibold">{item.title}</h3>
+            <p class="mt-2 text-muted">{item.text}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
 
-			<section class="editorial-section">
-				<div class="section-rail">
-					<p class="section-kicker">Experience</p>
-				</div>
-				<div class="story-block">
-					<p>
-						<strong>Lead UX Designer</strong><br />
-						Independent / Consulting, 2021 - Present
-					</p>
-					<p>
-						Leading interface design, product thinking, and design systems work across SaaS and
-						service platforms.
-					</p>
-					<p>
-						<strong>Senior Product Designer</strong><br />
-						Digital Product Studio, 2017 - 2021
-					</p>
-					<p>
-						Designed workflows, dashboards, and multi-platform product experiences for startup
-						and enterprise clients.
-					</p>
-					<p>
-						<strong>UI/UX Designer</strong><br />
-						In-house Product Teams, 2014 - 2017
-					</p>
-					<p>
-						Built core interface patterns, user flows, and production-ready visual systems for
-						web and mobile products.
-					</p>
-				</div>
-			</section>
+    <section class="resume-row reveal" aria-labelledby="education-title">
+      <h2 id="education-title" class="eyebrow self-start">
+        Education
+      </h2>
+      <ul class="grid gap-6">
+        {resume.education.map((item) => (
+          <li class="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1">
+            <span>
+              <span class="font-semibold">{item.title}</span>
+              <span class="text-muted">, {item.place}</span>
+            </span>
+            <span class="text-sm text-muted">{item.period}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
 
-			<section class="editorial-section">
-				<div class="section-rail">
-					<p class="section-kicker">Capabilities</p>
-				</div>
-				<div class="story-block">
-					<p>
-						<strong>Product Strategy:</strong> framing problems, prioritizing experience
-						decisions, and aligning product goals with user value.
-					</p>
-					<p>
-						<strong>UI Systems:</strong> building coherent interface languages that scale across
-						flows, features, and implementation teams.
-					</p>
-					<p>
-						<strong>Execution:</strong> taking concepts through wireframes, high-fidelity UI,
-						refinement, and developer-ready handoff.
-					</p>
-				</div>
-			</section>
-
-			<section class="editorial-section">
-				<div class="section-rail">
-					<p class="section-kicker">Tools</p>
-				</div>
-				<div class="tools-grid">
-					{
-						tools.map((tool) => (
-							<div class="tool-card">
-								<div class:list={['tool-mark', tool.tone === 'dark' && 'tool-mark-dark']} aria-hidden="true">
-									<Image class="tool-logo" src={tool.logo} alt="" loading="lazy" />
-								</div>
-								<p class="tool-name">{tool.name}</p>
-							</div>
-						))
-					}
-				</div>
-			</section>
-		</main>
-	</div>
-</Layout>
+    <section class="resume-row reveal" aria-labelledby="tools-title">
+      <h2 id="tools-title" class="eyebrow self-start">
+        Tools
+      </h2>
+      <ul class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {resume.tools.map((tool) => (
+          <li class="flex items-center gap-3 rounded-panel border border-line bg-surface p-3.5">
+            <span
+              class:list={[
+                'grid size-11 place-items-center rounded-xl border',
+                tool.dark ? 'border-[#121211] bg-[#121211]' : 'border-line bg-sunken',
+              ]}
+            >
+              <Image src={tool.logo} alt="" class="size-6 object-contain" />
+            </span>
+            <span class="font-medium">{tool.name}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </div>
+</BaseLayout>
 
 <style>
-	.page {
-		position: relative;
-		width: min(calc(100% - 3rem), 78rem);
-		margin: 0 auto;
-		padding: 1.25rem 0 5rem;
-	}
+  .resume-row {
+    display: grid;
+    gap: 1.5rem;
+    padding-block: 3rem;
+    border-top: 1px solid var(--line);
+  }
 
-	.eyebrow,
-	.section-kicker {
-		font-family: var(--font-mono);
-		font-size: 0.82rem;
-		font-weight: 600;
-		letter-spacing: 0.08em;
-		line-height: 1.4;
-		text-transform: uppercase;
-	}
-
-	.hero {
-		padding: 6rem 0 4rem;
-	}
-
-	.eyebrow,
-	.section-kicker {
-		margin: 0;
-		color: var(--muted-foreground);
-		font-style: normal;
-	}
-
-	.hero-subgrid {
-		display: grid;
-		grid-template-columns: 1fr;
-		margin-top: 1.75rem;
-	}
-
-	.hero-text,
-	.story-block p {
-		font-size: 1.08rem;
-		line-height: 1.7;
-		margin: 0;
-	}
-
-	.editorial-section {
-		display: grid;
-		grid-template-columns: 16rem minmax(0, 1fr);
-		gap: 2rem;
-		padding: 2.5rem 0;
-		border-top: 1px solid var(--border);
-	}
-
-	.section-rail {
-		align-self: start;
-	}
-
-	.story-block {
-		display: grid;
-		gap: 1rem;
-		max-width: 52rem;
-	}
-
-	.story-block strong {
-		color: var(--foreground);
-	}
-
-	.tools-grid {
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 1rem;
-		max-width: 44rem;
-	}
-
-	.tool-card {
-		display: flex;
-		align-items: center;
-		gap: 0.9rem;
-		padding: 1rem 1.05rem;
-		border: 1px solid var(--border);
-		border-radius: 1.15rem;
-		background: var(--card);
-	}
-
-	.tool-mark {
-		width: 3rem;
-		height: 3rem;
-		flex: 0 0 3rem;
-		display: grid;
-		place-items: center;
-		border-radius: 0.9rem;
-		background: linear-gradient(
-			180deg,
-			color-mix(in srgb, var(--muted) 90%, var(--card) 10%) 0%,
-			color-mix(in srgb, var(--border) 55%, var(--card) 45%) 100%
-		);
-		border: 1px solid color-mix(in srgb, var(--border) 88%, var(--background) 12%);
-		font-size: 0.95rem;
-		font-weight: 800;
-		letter-spacing: -0.04em;
-		color: var(--foreground);
-	}
-
-	.tool-mark-dark {
-		background: #111111;
-		border-color: #111111;
-	}
-
-	.tool-logo {
-		width: 1.55rem;
-		height: 1.55rem;
-		display: block;
-		object-fit: contain;
-	}
-
-	.tool-name {
-		margin: 0;
-		font-size: 1rem;
-		font-weight: 600;
-		letter-spacing: -0.02em;
-	}
-
-	@media (max-width: 980px) {
-		.hero-subgrid {
-			grid-template-columns: 1fr;
-		}
-	}
-
-	@media (max-width: 720px) {
-		.page {
-			width: min(calc(100% - 1.5rem), 78rem);
-			padding-top: 1rem;
-		}
-
-		.hero {
-			padding: 4rem 0 3rem;
-		}
-
-		.editorial-section {
-			grid-template-columns: 1fr;
-		}
-
-		.hero-text,
-		.story-block p {
-			font-size: 1.05rem;
-		}
-
-		.tools-grid {
-			grid-template-columns: 1fr;
-		}
-	}
+  @media (min-width: 64rem) {
+    .resume-row {
+      grid-template-columns: 16rem minmax(0, 1fr);
+      gap: 4rem;
+    }
+  }
 </style>

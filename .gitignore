@@ -1,24 +1,44 @@
-# build output
-dist/
-
-# generated types
-.astro/
-
-# dependencies
-node_modules/
-
-# logs
+# Logs
+logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+lerna-debug.log*
 
-# environment variables
-.env
-.env.production
+node_modules
+.astro
+dist
+dist-ssr
+coverage
+*.local
 
-# macOS-specific files
+# Environment
+.env*
+!.env.example
+
+# Internal release/workflow notes
+RELEASE_CHECKLIST.md
+
+# Wrangler / Cloudflare
+.wrangler/
+.dev.vars
+
+# Vercel
+.vercel
+
+# Editor directories and files
+test-results
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
-# jetbrains setting folder
-.idea/
+# Local AI assistant instructions
+CLAUDE.md

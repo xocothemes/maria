@@ -1,239 +1,233 @@
-# AGENTS.md Instructions for Theme Development
+# Astro Website Agent Guide
 
-These instructions apply to all Astro theme work. Prioritize clean, reusable, accessible, fast, SEO-friendly code. Treat the theme as something that may be reused across multiple websites, not as a one-off implementation.
+## Scope and priorities
 
-## General Principles
+These instructions apply to the entire repository unless a more specific
+`AGENTS.md` exists in a subdirectory.
 
-* Prefer simple, maintainable Astro components over unnecessary abstractions.
-* Keep the default Astro advantage: mostly static HTML, minimal JavaScript, and hydration only where needed.
-* Do not add client-side JavaScript unless there is a clear user-facing reason.
-* Avoid unnecessary dependencies. Before adding a package, check whether the same result can be achieved with Astro, HTML, CSS, or a small utility.
-* Keep components reusable, documented, and easy to override.
-* Use TypeScript where helpful, especially for props, content schemas, config objects, and reusable utilities.
-* Favor progressive enhancement. The site should remain usable even if JavaScript fails.
-* Keep markup clean, semantic, and easy to crawl.
-* Never solve layout or behavior problems in a way that harms accessibility, SEO, or performance.
+When instructions conflict, follow this order:
 
-## Astro-Specific Guidelines
+1. The user's current request
+2. The nearest applicable `AGENTS.md`
+3. Established repository conventions
+4. This file
 
-* Use `.astro` components for static and content-focused UI.
-* Use islands/client hydration only when interactivity is required.
-* Avoid `client:load` unless the component truly needs to run immediately.
-* Prefer `client:visible`, `client:idle`, or no hydration when possible.
-* Keep layout components responsible for page structure, shared metadata, global slots, and theme-level wrappers.
-* Keep UI components small and focused.
-* Use `Astro.props` with typed props where possible.
-* Use content collections for structured content like posts, pages, projects, docs, testimonials, FAQs, and changelogs.
-* Validate frontmatter with schemas instead of relying on loose optional fields.
-* Keep route structure clean and predictable.
-* Do not hardcode production URLs inside components. Use site config, constants, or environment-aware helpers.
-* Make sure the theme works with a configurable `site` value in `astro.config.*`.
+Build the site as a reusable, production-ready Astro project. Prefer clear,
+accessible, secure, fast code over clever abstractions.
 
-## Accessibility Requirements
+## Before making changes
 
-* Use semantic HTML first. Do not use ARIA when a native HTML element solves the problem.
-* Use landmarks properly: `header`, `nav`, `main`, `section`, `article`, `aside`, and `footer` where appropriate.
-* Each page should have one clear `h1`.
-* Preserve logical heading order. Do not skip heading levels for visual styling.
-* All interactive elements must be keyboard accessible.
-* Use real buttons for actions and real links for navigation.
-* Every form control must have an associated label.
-* Inputs, errors, help text, and validation states must be understandable to screen readers.
-* Add visible focus styles. Never remove outlines without replacing them with an accessible focus state.
-* Provide a skip link for keyboard users when the layout has repeated navigation.
-* Use descriptive link text. Avoid vague text like “click here” or “read more” without context.
-* Images must have useful `alt` text when meaningful.
-* Decorative images should use empty alt text.
-* Icons used as buttons or links must have accessible names.
-* Ensure sufficient color contrast for text, icons, borders, and states.
-* Do not rely on color alone to communicate meaning.
-* Respect `prefers-reduced-motion`.
-* Avoid auto-playing motion, carousels, or animations unless they are user-controlled and accessible.
-* Modals, menus, accordions, tabs, dropdowns, and mobile navigation must handle focus, keyboard interaction, and escape/close behavior correctly.
-* Test important templates with keyboard navigation and screen reader-friendly markup in mind.
+- Inspect `package.json`, the lockfile, `astro.config.*`, `tsconfig.json`, the
+  relevant source files, and the README before choosing an implementation.
+- Check for `src/content.config.*`, `src/live.config.*`, adapters, integrations,
+  UI frameworks, CSS tooling, test tooling, and existing utility modules.
+- Use the package manager selected by the lockfile. Do not create a second
+  lockfile or switch package managers.
+- Use existing scripts from `package.json`. Do not assume script names.
+- Preserve the project's rendering mode, adapter, directory structure, naming,
+  formatting, and component patterns unless the task requires a change.
+- Confirm whether a page is prerendered or rendered on demand before using
+  browser-only, build-time, or request-time APIs.
+- Do not upgrade Astro, integrations, or other dependencies unless requested or
+  required for the requested change.
 
-## SEO Requirements
+## Change discipline
 
-* Every page should have a unique, descriptive `<title>`.
-* Every indexable page should have a useful meta description.
-* Use a reusable SEO or Head component for metadata.
-* Include canonical URLs where appropriate.
-* Support Open Graph metadata for social sharing.
-* Support Twitter/X card metadata where appropriate.
-* Use absolute URLs for canonical and social image URLs.
-* Configure `site` in `astro.config.*` so canonical URLs and sitemap generation work correctly.
-* Include sitemap support for production themes.
-* Include sensible robots handling.
-* Avoid duplicate metadata across pages.
-* Avoid duplicate content caused by inconsistent trailing slashes, canonical paths, or pagination.
-* Use clean, descriptive URLs.
-* Add structured data where useful, such as `WebSite`, `Organization`, `Article`, `BreadcrumbList`, `Product`, `FAQPage`, or `LocalBusiness`, depending on the theme.
-* Do not add fake schema data. Structured data must match visible page content.
-* Use proper heading structure to reflect the content hierarchy.
-* Ensure important content is present in the HTML, not hidden behind client-only rendering.
-* Use descriptive image filenames where possible.
-* Add alt text and dimensions for content images.
-* Include pagination metadata where relevant.
-* Support multilingual SEO only when the theme actually supports multiple languages. If it does, include proper `lang`, canonical, and alternate/hreflang handling.
-* Keep internal links crawlable with real `<a href="">` links.
-* Avoid JavaScript-only navigation for normal pages.
+- Make the smallest coherent change that fully solves the task.
+- Do not reformat, rename, or refactor unrelated code.
+- Reuse existing components, utilities, tokens, and content models before
+  creating new ones.
+- Keep public component props, content schemas, routes, and config interfaces
+  backward compatible unless a breaking change is explicitly requested.
+- Add a dependency only when the platform and existing dependencies cannot
+  reasonably solve the problem. Explain the need in the final summary.
+- Do not edit generated output such as `dist/`, `.astro/`, coverage reports, or
+  generated type files.
+- Do not commit secrets, credentials, real personal data, or environment files.
+- If a high-impact requirement is genuinely ambiguous, ask before making an
+  irreversible or architecture-changing choice.
 
-## Performance Requirements
+## Astro implementation
 
-* Keep JavaScript minimal.
-* Avoid shipping framework runtime code unless needed.
-* Hydrate components selectively.
-* Prefer static rendering where possible.
-* Avoid large global scripts.
-* Avoid large CSS bundles.
-* Keep CSS scoped, layered, or organized in a predictable way.
-* Remove unused CSS and unused components.
-* Optimize images with Astro’s image tools where appropriate.
-* Always include image width and height to reduce layout shift.
-* Use responsive images for large visual assets.
-* Lazy-load below-the-fold images.
-* Do not lazy-load critical above-the-fold hero images unless there is a good reason.
-* Use modern image formats when appropriate.
-* Avoid layout shifts from images, ads, embeds, cookie banners, and late-loading UI.
-* Keep third-party scripts optional and documented.
-* Load analytics, embeds, chat widgets, and marketing scripts only when explicitly enabled.
-* Avoid blocking render with unnecessary scripts or styles.
-* Keep Core Web Vitals in mind, especially LCP, CLS, and INP.
+- Use `.astro` components for static, server-rendered, and content-focused UI.
+- Use the project's existing UI framework only for interaction that benefits
+  from it. Do not introduce a framework for a static component.
+- Astro and framework components should render static HTML by default. Add a
+  `client:*` directive only when browser-side interaction is required.
+- Choose the least eager suitable hydration strategy:
+  - `client:load` for immediately visible, immediately interactive UI.
+  - `client:idle` for lower-priority interaction.
+  - `client:visible` for interaction that can wait until near the viewport.
+  - `client:media` when hydration is genuinely conditional on a media query.
+  - `client:only` only when server rendering is impossible, with an appropriate
+    loading fallback.
+- Keep browser globals such as `window`, `document`, and `localStorage` out of
+  server and component frontmatter code. Access them only in browser-executed
+  code and guard them when necessary.
+- Define component props with TypeScript, normally using `interface Props`.
+  Avoid `any`; narrow unknown or external data at the boundary.
+- Keep layouts responsible for document structure, shared metadata, global
+  wrappers, and slots. Keep UI components focused on one responsibility.
+- Use Astro routing conventions and the project's existing trailing-slash,
+  base-path, and output settings. Do not hardcode deployment paths.
+- Generate URLs with `Astro.url`, `Astro.site`, `new URL()`, or a centralized
+  helper as appropriate. Do not hardcode production origins in components.
+- Use content collections for repeatable, queryable content when they improve
+  the data model. Define schemas and loaders in the configuration style already
+  used by the installed Astro version. Do not migrate collection APIs as a
+  side effect of unrelated work.
+- Filter drafts and unpublished entries consistently in production.
+- Treat `set:html` as a security boundary. Use it only with trusted or properly
+  sanitized HTML; prefer normal escaped template expressions otherwise.
+- Use environment variables through the mechanism already established by the
+  project. Values exposed to client code are public. Never expose a secret with
+  a `PUBLIC_` variable or serialize it into HTML.
 
-## Font Optimization
+## Components and styling
 
-* Prefer self-hosted fonts for production themes.
-* Use only the font families actually needed by the theme.
-* Include only the font weights and styles actually used.
-* Prefer modern formats such as `woff2`.
-* Use `font-display: swap` or another intentional rendering strategy.
-* Preload only critical fonts used above the fold.
-* Do not preload every font file.
-* Define fallback font stacks that closely match the custom font metrics.
-* Avoid layout shift caused by late-loading fonts.
-* Do not load fonts from external providers by default unless the user explicitly chooses that option.
-* Keep font configuration centralized so users can replace or disable custom fonts easily.
+- Prefer semantic HTML and shallow markup over wrapper-heavy component trees.
+- Use design tokens or CSS custom properties for repeated colors, spacing,
+  typography, radii, shadows, and layout values.
+- Keep global styles and resets centralized. Prefer component-scoped styles for
+  component-specific rules.
+- Follow the existing CSS methodology. Do not mix in a second styling system
+  without a clear requirement.
+- Build mobile-first, test narrow and wide viewports, and avoid fixed dimensions
+  that break with zoom, localization, or longer content.
+- Do not render empty sections or broken controls when optional content is
+  absent.
+- Keep animation restrained and provide a reduced-motion treatment.
 
-## CSS and Design System Guidelines
+## Accessibility
 
-* Use design tokens or CSS custom properties for colors, spacing, typography, radii, shadows, and layout values.
-* Keep theme customization simple.
-* Avoid scattering hardcoded colors and spacing values throughout components.
-* Support light and dark modes only if the theme is designed for both.
-* Respect user system preference when dark mode is supported.
-* Ensure color tokens meet accessibility contrast requirements.
-* Keep responsive behavior consistent across components.
-* Use fluid and responsive typography where appropriate.
-* Avoid unnecessary wrappers and deeply nested markup.
-* Keep animations subtle, optional, and respectful of reduced-motion preferences.
+Accessibility is a completion requirement, not a follow-up.
 
-## Content and Markdown Guidelines
+- Use native semantic elements before ARIA.
+- Provide a descriptive page title, a clear main landmark, a useful heading
+  hierarchy, and normally one primary `h1`.
+- Use `<a>` for navigation and `<button>` for actions.
+- Ensure all functionality works with a keyboard and has visible focus styles.
+- Provide a skip link when repeated navigation precedes the main content.
+- Give every form control an accessible label. Connect instructions and errors
+  with `aria-describedby` when appropriate, and expose invalid state
+  programmatically.
+- Do not use placeholder text as the only label or color as the only indication
+  of state.
+- Give meaningful images useful alt text and decorative images `alt=""`.
+- Give icon-only controls an accessible name.
+- Preserve logical focus order. Menus, dialogs, tabs, accordions, and disclosure
+  widgets must follow their expected keyboard and focus behavior.
+- Do not add a focus trap except for a genuinely modal interface, and restore
+  focus when it closes.
+- Meet WCAG AA contrast expectations for text, controls, focus indicators, and
+  meaningful graphics.
+- Respect `prefers-reduced-motion` and avoid autoplaying disruptive media.
 
-* Content should be easy to manage through Markdown, MDX, or content collections.
-* Validate required frontmatter fields.
-* Provide sensible defaults for optional metadata.
-* Avoid requiring users to duplicate the same SEO fields in many places when defaults can be generated safely.
-* Support draft or unpublished content only when the theme explicitly needs it.
-* Make dates, authors, categories, tags, and excerpts consistent.
-* Make sure generated archive, tag, category, author, and pagination pages have useful metadata.
-* Avoid rendering empty UI sections when content is missing.
+## SEO and document metadata
 
-## Image and Media Guidelines
+- Set a unique, descriptive `<title>` and a useful meta description for each
+  indexable page.
+- Centralize shared metadata in a layout or SEO component while allowing
+  page-level overrides.
+- Use canonical URLs derived from the configured site and actual route. Keep
+  canonical, trailing-slash, pagination, and base-path behavior consistent.
+- Add Open Graph and social-card metadata where the project supports sharing.
+  Canonical and social image URLs must be absolute in production.
+- Ensure the root `html` element has the correct `lang`.
+- Keep important content and navigation in rendered HTML. Normal navigation
+  must use crawlable links.
+- Add structured data only when it is useful and fully matches visible content.
+- Keep robots and sitemap behavior environment-aware so previews and staging
+  deployments are not accidentally indexed.
+- Add multilingual canonical and `hreflang` handling only when the site actually
+  supports those locales.
 
-* Use optimized local images where possible.
-* Provide responsive sizes for theme-controlled images.
-* Include `alt` text fields in content schemas where images are user-provided.
-* Do not use background images for meaningful content unless an accessible text alternative exists.
-* Avoid enormous default hero images.
-* Provide predictable aspect ratios to prevent layout shift.
-* Lazy-load media that is not immediately visible.
-* Make video/audio embeds accessible with labels, captions, transcripts, or surrounding explanatory content when relevant.
+## Images, fonts, and media
 
-## Component Guidelines
+- Prefer imported local images and Astro's image pipeline when optimization is
+  useful. Remember that files in `public/` are copied as-is.
+- Configure allowed remote image sources before using optimized remote images.
+- Supply meaningful alt text plus intrinsic width and height, or otherwise
+  reserve the correct aspect ratio to prevent layout shift.
+- Provide accurate `sizes` and responsive sources for large images.
+- Lazy-load below-the-fold media. Do not lazy-load the likely LCP image.
+- Avoid oversized default assets and unnecessary format variants.
+- Prefer self-hosted `woff2` fonts. Include only the families, weights, and
+  styles in use.
+- Preload only a critical above-the-fold font or image when measurement or page
+  structure justifies it.
+- Use an intentional `font-display` strategy and a compatible fallback stack.
+- Make video and audio usable with the relevant controls, labels, captions, or
+  transcripts.
 
-* Components should have clear responsibilities.
-* Props should be typed and documented when not obvious.
-* Use sensible defaults.
-* Avoid components that silently fail or render broken markup when required props are missing.
-* Avoid coupling generic components to one specific page.
-* Keep class names predictable.
-* Make components easy to copy, remove, or override.
-* Do not introduce global side effects from small components.
-* For interactive components, document keyboard behavior and accessibility expectations.
+## Performance and client code
 
-## Forms
+- Preserve Astro's default advantage: static HTML and no client runtime unless
+  needed.
+- Prefer progressive enhancement so core content and navigation remain usable
+  if JavaScript fails.
+- Avoid large global scripts, duplicate listeners, and framework runtimes for
+  isolated behavior.
+- Keep third-party scripts optional, consent-aware when applicable, and
+  documented. Load analytics, embeds, chat, or marketing code only when enabled.
+- Avoid layout shifts from images, fonts, embeds, banners, and asynchronous UI.
+- Consider LCP, CLS, and INP when changing above-the-fold content or interaction.
+- Do not claim a performance improvement without a measurement or a clear
+  reduction in shipped work.
 
-* Use semantic form markup.
-* Every input must have a label.
-* Required fields must be indicated accessibly.
-* Error messages must be connected to the relevant fields.
-* Success and error states should be announced or clearly visible.
-* Do not rely only on placeholder text as a label.
-* Use appropriate input types such as `email`, `tel`, `url`, `search`, and `number`.
-* Keep forms usable without unnecessary JavaScript where possible.
-* Do not include a form provider by default unless it is configurable.
+## Forms and security
 
-## Navigation
+- Prefer native form behavior and server-side validation, adding client-side
+  validation as an enhancement.
+- Use suitable input types and autocomplete attributes.
+- Keep submitted values after validation errors when safe, and provide clear
+  success and failure feedback.
+- Validate and sanitize untrusted input on the server. Client validation is not
+  a security control.
+- Do not log secrets or sensitive form data.
+- Do not add a form provider, analytics service, cookie banner, or other
+  third-party integration by default. Make integrations configurable.
 
-* Use real links for navigation.
-* Mark the current page or section when possible.
-* Ensure mobile navigation works with keyboard and screen readers.
-* Trap focus only when appropriate, such as inside an open modal menu.
-* Restore focus after closing menus or dialogs when relevant.
-* Make dropdowns and submenus accessible.
-* Do not hide navigation from assistive technology unless it is truly inactive.
+## Theme and content quality
 
-## Build, Config, and DX
+- Centralize common site settings such as name, default metadata, navigation,
+  social links, and footer content.
+- Make common customization possible without editing many unrelated files.
+- Use realistic, clearly replaceable demo content. Do not publish lorem ipsum,
+  broken links, fake testimonials presented as real, or invalid structured data.
+- Keep dates, authors, taxonomies, excerpts, and archive behavior consistent.
+- Document any new configuration, environment variable, content field, or
+  integration in the README or the nearest relevant documentation.
 
-* Keep configuration centralized and documented.
-* Provide clear theme constants for site name, default title, description, social links, navigation, and footer data.
-* Avoid requiring users to edit many files for common changes.
-* Use environment variables only where they are actually needed.
-* Do not expose secrets in client-side code.
-* Keep the README accurate.
-* Include setup, development, build, preview, customization, and deployment instructions.
-* Add comments only where they clarify non-obvious decisions.
-* Keep generated examples realistic and production-friendly.
-* Make sure the theme builds cleanly without warnings or broken links.
+## Verification
 
-## Testing and QA Checklist
+Run the checks relevant to the files changed, using repository scripts and the
+selected package manager.
 
-Before considering work complete, verify:
+At minimum:
 
-* The project builds successfully.
-* Pages render without console errors.
-* No unnecessary client JavaScript is shipped.
-* Navigation works with keyboard only.
-* Focus states are visible.
-* Forms have labels and accessible states.
-* Images have correct alt text and dimensions.
-* Metadata is present and unique per page.
-* Canonical URLs are correct.
-* Sitemap generation works.
-* Social preview metadata is valid.
-* The layout is responsive.
-* Dark mode works if supported.
-* Reduced motion is respected.
-* Lighthouse or similar checks do not reveal obvious accessibility, SEO, or performance issues.
-* There are no broken internal links.
-* There is no placeholder content left in production-facing defaults.
+1. Run the project's formatting or lint check when available.
+2. Run Astro/TypeScript validation when available.
+3. Run focused tests for changed behavior, then the broader test suite when
+   practical.
+4. Run the production build for changes that affect rendering, routes, content,
+   configuration, or dependencies.
+5. Inspect the final diff for unrelated edits, generated files, secrets, debug
+   output, placeholder content, and accidental public API changes.
 
-## Things to Avoid
+For UI work, also verify the affected pages at representative mobile and desktop
+sizes, keyboard operation, visible focus, missing-content states, and browser
+console errors. Check the rendered HTML and metadata when SEO or content output
+changes.
 
-* Do not use `<div>` and `<span>` for everything when semantic HTML exists.
-* Do not add ARIA roles to elements that already have correct native semantics.
-* Do not remove focus outlines without accessible replacements.
-* Do not add heavy animation libraries for simple transitions.
-* Do not add global JavaScript for isolated UI behavior.
-* Do not load all font weights “just in case.”
-* Do not load external fonts by default.
-* Do not use client-only rendering for content that should be crawlable.
-* Do not hide important content behind JavaScript.
-* Do not hardcode metadata across every page.
-* Do not ship large demo assets as required production assets.
-* Do not introduce dependencies without a clear reason.
-* Do not sacrifice accessibility for visual polish.
+Do not report a check as passing unless it was run. If a check cannot be run,
+state which check was skipped and why.
 
-## Preferred Outcome
+## Completion report
 
-The final Astro theme should be fast, accessible, SEO-ready, easy to customize, and pleasant to maintain. It should provide strong defaults while staying lightweight and flexible.
+In the final response:
+
+- Summarize the user-visible result.
+- List the important files changed.
+- Report the validation commands run and their outcomes.
+- Note any remaining risk, follow-up, or unverified behavior.

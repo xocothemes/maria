@@ -1,0 +1,11 @@
+{
+  "name": "maria",
+  "compatibility_date": "2026-10-08",
+  "build": {
+    "command": "npm run build",
+  },
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page",
+  },
+}

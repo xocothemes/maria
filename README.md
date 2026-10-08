@@ -1,41 +1,50 @@
-# Maria - Astro Theme for UI/UX and Product Designers
+# Maria - Astro Portfolio Theme for Product Designers
 
-[![Maria theme preview](https://raw.githubusercontent.com/andreialba/maria/main/public/screenshot.webp)](https://maria-lake.vercel.app/)
+[![Maria theme preview](./preview.webp)](https://maria.xocoweb.workers.dev/)
 
 [![Astro 7](https://img.shields.io/badge/Astro-7-FF5D01?style=for-the-badge&logo=astro&logoColor=white)](https://astro.build/)
 [![Tailwind CSS 4](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Configured-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-84cc16?style=for-the-badge)](./LICENSE)
 
-**Preview:** [maria-lake.vercel.app](https://maria-lake.vercel.app/)
+**Live preview:** https://maria.xocoweb.workers.dev/
 
-Maria is a clean Astro portfolio theme for UI/UX designers, product designers, and visual product thinkers.
+Maria is a free Astro theme for UX designers, product designers, and anyone whose portfolio is built on case studies. It pairs a calm, editorial layout with large type, a serif accent, and project cards framed in soft color, so the work stays the focus. Case studies are MDX files validated by Astro content collections, the copy lives in a few config files, and the output is fully static.
 
-It includes:
+## Features
 
-- a polished portfolio homepage
-- a dedicated Works page with pagination
-- a sample case study page
-- About and Resume pages
-- light and dark mode with a persistent header icon toggle
-- cookie consent banner with saved preferences and a footer re-open action
-- self-hosted tool logos on the Resume page
-- Privacy, Terms, and 404 pages
-- a dedicated Cookie Policy page
-- shared header/footer/navigation
-- Astro-optimized responsive portfolio images
-- MDX support
-- sitemap generation
-- Open Graph and Twitter meta tags
-- structured data defaults
-- Netlify and Vercel config
+- A homepage with an availability badge, a large headline with a serif accent, key facts, selected case studies, services, and testimonials
+- Case studies written in MDX, one folder per project with its images beside it, validated by a content schema
+- Case study pages with a project summary, client, year, role, duration, team, and services, a full-width cover, and a "Next case study" card
+- `Figure` and `Stats` components for framed screenshots with captions and outcome metrics, available in every case study without imports
+- Project cards tinted per project, with a cropped cover and a quiet hover zoom
+- A paginated work index with previous and next links
+- An About page with a portrait, editorial sections, and principles
+- A Resume page with a snapshot, experience, capabilities, education, tools, and an optional PDF download
+- A closing "Let's talk" panel above the footer on every page, with a direct email button
+- Privacy, Terms, and Cookie Policy pages written in MDX, and a designed 404 page
+- A cookie consent banner and preferences dialog with analytics and marketing categories, a small client API, and a change event
+- Light and dark modes that follow the system until a visitor picks one, applied before first paint
+- A sticky header, a full-screen mobile menu built on the native dialog element, and a skip link
+- Entrance and scroll-reveal motion in CSS only, switched off for reduced-motion users
+- Responsive, optimized images through Astro's image pipeline, with social cards cropped from each case study's cover
+- Canonical URLs, Open Graph and Twitter/X cards, sitemap, `robots.txt`, and JSON-LD for the site, profile pages, case studies, and breadcrumbs
+- Self-hosted Hanken Grotesk and Instrument Serif, a local Lucide icon set, and design tokens in one stylesheet
+- Static output with no framework islands and only a few small scripts
+- Landmarks, labelled controls, visible focus states, and keyboard support throughout
 
 ## Tech Stack
 
-- Astro 7
-- Tailwind CSS 4 via Vite plugin
-- MDX
-- `@fontsource-variable/manrope`
+- Astro 7 with MDX
+- Tailwind CSS 4 via the Vite plugin
+- TypeScript, Astro content collections
+- `@astrojs/sitemap`, Sharp
+- Self-hosted Hanken Grotesk and Instrument Serif, Lucide and Bootstrap Icons, each with its license notice
+
+## Requirements
+
+- Node.js `22.12.0` or newer
+- npm
 
 ## Getting Started
 
@@ -56,166 +65,35 @@ Preview the production build locally:
 npm run preview
 ```
 
-## Template Setup
+Before shipping a change, run type checking, the production build, and the formatter check together:
 
-The main template settings live in:
-
-- [src/config/site.ts](./src/config/site.ts)
-
-Update this file before publishing:
-
-- `name`
-- `title`
-- `description`
-- `email`
-- `authorName`
-- `authorRole`
-- social links
-
-Set your production domain with an environment variable before publishing:
-
-- `SITE_URL=https://your-domain.com`
-- or `PUBLIC_SITE_URL=https://your-domain.com`
-
-This keeps canonical URLs, `robots.txt`, and the sitemap aligned without editing source for each environment.
-
-## SEO
-
-The template includes:
-
-- canonical URLs
-- meta descriptions
-- keyword meta
-- Open Graph tags
-- Twitter card tags
-- sitemap generation
-- dynamic `robots.txt`
-- JSON-LD structured data defaults
-- `noindex` handling for the 404 page
-
-Main SEO files:
-
-- [src/layouts/Layout.astro](./src/layouts/Layout.astro)
-- [astro.config.mjs](./astro.config.mjs)
-- [src/pages/robots.txt.ts](./src/pages/robots.txt.ts)
-- [public/og-image.svg](./public/og-image.svg)
-
-## Cookies and Consent
-
-The theme includes a client-side cookie consent system with:
-
-- a bottom banner for first visit consent
-- a preferences modal with essential, analytics, and marketing categories
-- saved consent in `localStorage` under `maria-cookie-consent`
-- a footer `Cookie Preferences` button for reopening the modal
-- a `Cookies` policy page at `/cookies`
-
-The theme also saves the visitor's color theme in `localStorage` under `maria-theme`.
-
-### How consent works
-
-- Essential storage is always active because it remembers theme and consent choices.
-- Analytics and marketing are optional categories and default to off until the visitor opts in.
-- The consent UI works out of the box even if you have not connected analytics or marketing tools yet.
-
-### Client API
-
-The consent script exposes `window.mariaCookieConsent` in the browser:
-
-```js
-window.mariaCookieConsent.getConsent();
-window.mariaCookieConsent.hasConsent();
-window.mariaCookieConsent.canUse('analytics');
-window.mariaCookieConsent.canUse('marketing');
-window.mariaCookieConsent.openPreferences();
+```bash
+npm run release:check
 ```
 
-Whenever a visitor updates their preferences, the site dispatches:
+## Customization
 
-```js
-window.addEventListener('maria:cookieConsentChanged', (event) => {
-  console.log(event.detail);
-});
-```
+See [CUSTOMIZATION.md](./CUSTOMIZATION.md) for site settings, the homepage, case studies and their frontmatter, the MDX components, the About and Resume pages, legal pages, cookie consent, the theme's design tokens, fonts, icons, and dark mode.
 
-### Hooking in analytics or marketing scripts
+Set `siteConfig.siteUrl` in [src/config/site.ts](./src/config/site.ts) before building — canonical URLs, social images, the sitemap, `robots.txt`, and the structured data are all derived from it. The build is static, so any host that serves a directory works: `vercel.json` is included for Vercel and `wrangler.jsonc` for Cloudflare Workers, and Netlify, GitHub Pages, and object storage behind a CDN need no configuration beyond `npm run build`.
 
-Only load optional third-party scripts after checking consent. Example:
+## Content
 
-```html
-<script>
-  if (window.mariaCookieConsent?.canUse('analytics')) {
-    // load your analytics script here
-  }
+Case studies live in [src/content/work](./src/content/work), one folder per project holding an `index.mdx` and its images, validated by the schema in [src/content.config.ts](./src/content.config.ts). The folder name is the case study's URL slug.
 
-  window.addEventListener('maria:cookieConsentChanged', (event) => {
-    if (event.detail.analytics) {
-      // load or re-enable analytics here
-    }
-  });
-</script>
-```
+The bundled projects, people, and product screenshots are fictional demo content. Replace them with your own work, words, and portrait before launch.
 
-If you add a new provider, also update:
+## Support
 
-- [src/pages/cookies.astro](./src/pages/cookies.astro)
-- [src/pages/privacy.astro](./src/pages/privacy.astro)
-- banner/modal copy in [public/cookie-consent.js](./public/cookie-consent.js)
-
-## Content and Pages
-
-Theme behavior:
-
-- the site respects the visitor's system color scheme by default
-- the header includes an icon-only theme toggle for switching between light and dark mode
-- the selected theme is saved in `localStorage`
-
-Main pages:
-
-- `/`
-- `/about`
-- `/resume`
-- `/work`
-- `/work/nextpoint`
-- `/privacy`
-- `/cookies`
-- `/terms`
-- `/404`
-
-At the moment, `Nextpoint` is the only fully built case study page in the theme. The other homepage project cards intentionally point to `/work/nextpoint` as placeholders until you add their own case study pages.
-
-## Images and Assets
-
-Portfolio images live in:
-
-- [src/assets/images](./src/assets/images)
-
-Tool logos live in:
-
-- [src/assets/logos](./src/assets/logos)
-
-Notes:
-
-- Portfolio and case study screenshots use Astro's image pipeline for responsive optimized output.
-- Tool logos are self-hosted SVGs.
-- `public/` is reserved for files that should be served as-is, such as favicons and the Open Graph image.
-- Cookie consent assets live in [public/cookie-consent.js](./public/cookie-consent.js) and [public/cookie-consent.css](./public/cookie-consent.css).
-
-## Deployment
-
-Included config:
-
-- [netlify.toml](./netlify.toml)
-- [vercel.json](./vercel.json)
-
-If you only deploy to one platform, delete the other config file before wiring up CI so platform auto-detection stays predictable.
+Maria is free and provided as-is. Bug reports and questions are welcome as [GitHub issues](https://github.com/xocothemes/maria/issues); custom design and feature work is not included. See [CONTRIBUTING.md](./CONTRIBUTING.md) to propose a change, and [CHANGELOG.md](./CHANGELOG.md) for release history.
 
 ## License
 
-This project is licensed under the [MIT License](./LICENSE).
+MIT — free for personal and commercial projects. See [LICENSE](./LICENSE), which also lists the licenses of the bundled fonts and icons.
 
-## Notes
+## Credits
 
-- Replace the example project copy and images with your own work.
-- Set `SITE_URL` or `PUBLIC_SITE_URL` before deploying so SEO URLs do not point to the demo domain.
-- The social share image is a template default and can be replaced with your own branded preview.
+- [Hanken Grotesk](https://github.com/marcologous/hanken-grotesk) by Alfredo Marco Pradil, under the SIL Open Font License
+- [Instrument Serif](https://github.com/Instrument/instrument-serif) by Instrument, under the SIL Open Font License
+- [Lucide](https://lucide.dev/), under the ISC License
+- [Bootstrap Icons](https://icons.getbootstrap.com/), under the MIT License
